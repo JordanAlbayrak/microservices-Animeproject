@@ -1,0 +1,8 @@
+include 'utils'
+include 'api'
+include ':microservices:anime-service'
+include ':microservices:anime-review-service'
+include ':microservices:anime-recommendation-service'
+include ':microservices:anime-composite-service'
+
+
