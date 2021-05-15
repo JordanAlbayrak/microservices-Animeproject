@@ -1,24 +1,31 @@
 package com.albayrak.microservices.core.animerecommendation.datalayer;
 
 
-import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="recommendations")
-@CompoundIndex(name = "prod-rec-id", unique =true, def = " {'animeId:1, 'recommendationId' : 1}")
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Index;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "recommendations", indexes = { @Index(name = "recommendations_unique_idx", unique = true, columnList = "animeId,recommendationId") })
 public class RecommendationEntity {
 
 
     @Id
-    private String id;
+    @GeneratedValue
+    private int id;
 
     @Version
     private Integer version;
 
     private int animeId;
+
+
     private int recommendationId;
+
     private String author;
     private int rating;
     private String content;
@@ -34,7 +41,7 @@ public class RecommendationEntity {
         this.content = content;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -62,7 +69,7 @@ public class RecommendationEntity {
         this.content = content;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -90,4 +97,3 @@ public class RecommendationEntity {
         return content;
     }
 }
-

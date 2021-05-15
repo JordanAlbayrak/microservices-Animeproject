@@ -22,7 +22,8 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation('mysql:mysql-connector-java')
 	implementation("org.mapstruct:mapstruct:${mapstructVersion}")
 
 	compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -35,6 +36,7 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
+	testImplementation('com.h2database:h2')
 
 }
 
@@ -44,3 +46,4 @@ test {
 		events "passed", "skipped", "failed"
 	}
 }
+

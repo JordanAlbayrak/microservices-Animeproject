@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnimeRESTController implements AnimeServiceAPI {
 
 
+
     private static final Logger LOG = LoggerFactory.getLogger(AnimeRESTController.class);
 
+
     private final AnimeService animeService;
+
     public AnimeRESTController(AnimeService animeService){
         this.animeService = animeService;
+
     }
 
 
@@ -28,12 +32,29 @@ public class AnimeRESTController implements AnimeServiceAPI {
         LOG.debug("/anime MS return the found anime for animeId: " + animeId);
 
         if(animeId < 1) throw new InvalidInputException("Invalid animeId: " + animeId);
-       // if (animeId == 13) throw new NotFoundException("No anime found for animeId: " + animeId);
-        if(animeId == 500) throw new UnreleasedException("Unreleased animeId: " + animeId);
+
+        //if (animeId == 13) throw new NotFoundException("No anime found for animeId: " + animeId);
 
         Anime anime = animeService.getAnimeById(animeId);
 
-        //return new Anime(animeId, "name-" + animeId, "author1", serviceUtils.getServiceAddress());
+        //return new Anime(animeId, "name-" + animeId, 123, serviceUtils.getServiceAddress());
+        return  anime;
+    }
+    @Override
+    public Anime createAnime(Anime model) {
+        Anime anime = animeService.createAnime(model);
+
+        LOG.debug("REST createAnime: anime created for animeId: {}", anime.getAnimeId());
+
         return anime;
+    }
+
+    @Override
+    public void deleteAnime(int animeId) {
+
+        animeService.deleteAnime(animeId);
+
+        LOG.debug("REST deleteAnime: tried to delete animeId: {}", animeId);
+
     }
 }

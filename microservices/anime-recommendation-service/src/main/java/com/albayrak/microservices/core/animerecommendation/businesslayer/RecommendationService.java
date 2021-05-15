@@ -3,12 +3,14 @@ package com.albayrak.microservices.core.animerecommendation.businesslayer;
 import com.albayrak.api.core.anime.Anime;
 import com.albayrak.api.core.recommendation.Recommendation;
 
+import java.util.List;
+
 public interface RecommendationService {
 
-    public Recommendation getRecommendations(int animeId);
+    public List<Recommendation> getAnimeById(int animeId);
 
-    public Recommendation createRecommendations(Recommendation model);
+    public Recommendation createRecommendation(Recommendation model);
 
-    public void deleteRecommendation(int animeId);
+    public void deleteRecommendations(int animeId);
 
 }

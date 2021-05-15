@@ -17,7 +17,7 @@ app:
 logging:
   level:
     root: INFO
-    com.albayral: DEBUG
+    com.albayrak: DEBUG
 
 ---
 spring.profiles: docker
@@ -25,7 +25,7 @@ server.port: 8080
 
 app:
   anime-service:
-    host: product
+    host: anime
     port: 8080
   anime-recommendation-service:
     host: recommendation

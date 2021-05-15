@@ -24,12 +24,12 @@ public class PersistenceTests {
     @Autowired
     private AnimeRepository repository;
     private AnimeEntity savedEntity;
-
+    int number = 1;
     @BeforeEach
     public void setupDb() {
         repository.deleteAll();
 
-        AnimeEntity entity = new AnimeEntity(1, "t", "a");
+        AnimeEntity entity = new AnimeEntity(number+ 1, "ti", "au");
         savedEntity = repository.save(entity);
 
         //expected, actual
@@ -42,7 +42,7 @@ public class PersistenceTests {
     @Test
     public void createAnimeEntity() {
 
-        AnimeEntity newEntity = new AnimeEntity(2, "t", "b");
+        AnimeEntity newEntity = new AnimeEntity(number+2, "t", "b");
         repository.save(newEntity);
 
         AnimeEntity foundEntity = repository.findById(newEntity.getId()).get();

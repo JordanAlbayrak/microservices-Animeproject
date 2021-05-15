@@ -1,12 +1,21 @@
 package com.albayrak.api.composite.anime;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 public interface AnimeCompositeServiceAPI {
     @GetMapping(
             value = "/anime-composite/{animeId}",
             produces = "application/json"
     )
-    AnimeAggregate getAnime(@PathVariable int animeId);
+    AnimeAggregate getCompositeAnime(@PathVariable int animeId);
+
+    @PostMapping(
+            value = "/anime-composite",
+            consumes = "application/json"
+    )
+    void createCompositeAnime(@RequestBody AnimeAggregate model);
+
+    @DeleteMapping(value = "/anime-composite/{animeId}")
+    void deleteCompositeAnime(@PathVariable int animeId);
+
 }

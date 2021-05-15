@@ -4,9 +4,12 @@ import com.albayrak.api.composite.anime.*;
 import com.albayrak.api.core.anime.Anime;
 import com.albayrak.api.core.recommendation.Recommendation;
 import com.albayrak.api.core.review.Review;
+import com.albayrak.microservices.composite.anime.businesslayer.AnimeCompositeService;
 import com.albayrak.microservices.composite.anime.integrationlayer.AnimeCompositeIntegration;
 import com.albayrak.utils.exceptions.NotFoundException;
 import com.albayrak.utils.http.ServiceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -15,17 +18,17 @@ import java.util.stream.Collectors;
 @RestController
 public class AnimeCompositeRESTController implements AnimeCompositeServiceAPI {
 
-    private final ServiceUtils serviceUtils;
-    private AnimeCompositeIntegration integration;
+    private static final Logger LOG = LoggerFactory.getLogger(AnimeCompositeRESTController.class);
 
-    public AnimeCompositeRESTController(ServiceUtils serviceUtils, AnimeCompositeIntegration integration) {
-        this.serviceUtils = serviceUtils;
-        this.integration = integration;
+    private final AnimeCompositeService animeCompositeService;
+
+    public AnimeCompositeRESTController(AnimeCompositeService animeCompositeService ) {
+        this.animeCompositeService = animeCompositeService;
     }
 
     @Override
-    public AnimeAggregate getAnime(int animeId) {
-
+    public AnimeAggregate getCompositeAnime(int animeId) {
+/*
         Anime anime = integration.getAnime(animeId);
 
         if(anime == null) throw new NotFoundException("No anime found for animeId: " + animeId);
@@ -34,36 +37,30 @@ public class AnimeCompositeRESTController implements AnimeCompositeServiceAPI {
         List<Review> reviews= integration.getReviews(animeId);
 
         return createAnimeAggregate(anime, recommendations, reviews, serviceUtils.getServiceAddress());
+*/
+        LOG.debug("AnimeComposite received getAnimeComposite request.");
+
+        AnimeAggregate animeAggregate = animeCompositeService.getAnime(animeId);
+
+        return animeAggregate;
+    }
+
+    @Override
+    public void createCompositeAnime(AnimeAggregate model) {
+
+        LOG.debug("AnimeComposite received createAnimeComposite request.");
+
+        animeCompositeService.createAnime(model);
 
     }
 
-    private AnimeAggregate createAnimeAggregate(Anime anime, List<Recommendation> recommendations, List<Review> reviews, String serviceAddress) {
+    @Override
+    public void deleteCompositeAnime(int animeId) {
 
-        //1. Setup anime information
-        int animeId = anime.getAnimeId();
-        String title = anime.getTitle();
-        String author = anime.getAuthor();
+        LOG.debug("AnimeComposite received deleteAnimeComposite request.");
 
-        //2. Copy summary recommendation info, if any
-        List<RecommendationSummary> recommendationSummaries = (recommendations == null) ? null :
-                recommendations.stream()
-                        .map(recommendation -> new RecommendationSummary(recommendation.getRecommendationId(), recommendation.getAuthor(), recommendation.getRate()))
-                        .collect(Collectors.toList());
-
-        //3. Copy summary reviews info, if any
-        List<ReviewSummary> reviewSummaries = (reviews == null) ? null :
-                reviews.stream().map(review -> new ReviewSummary(review.getReviewId(), review.getAuthor(), review.getSubject()))
-                        .collect(Collectors.toList());
-
-        //4. Create info for microservice address
-        String animeAddress = anime.getServiceAddress();
-        String recommendationAddress = (recommendations != null && recommendations.size() > 0) ? recommendations.get(0).getServiceAddress() : "";
-        String reviewsAddress = (reviews != null && reviews.size() > 0) ? reviews.get(0).getServiceAddress() : "";
-
-        ServiceAddress serviceAddresses = new ServiceAddress(serviceAddress, animeAddress, reviewsAddress, recommendationAddress);
-
-        return new AnimeAggregate(animeId, title, author, recommendationSummaries, reviewSummaries, serviceAddresses);
-
+        animeCompositeService.deleteAnime(animeId);
 
     }
+
 }

@@ -2,6 +2,7 @@ package com.albayrak.microservices.core.animerecommendation.presentationlayer.co
 
 import com.albayrak.api.core.recommendation.Recommendation;
 import com.albayrak.api.core.recommendation.RecommendationServiceAPI;
+import com.albayrak.microservices.core.animerecommendation.businesslayer.RecommendationService;
 import com.albayrak.utils.exceptions.InvalidInputException;
 import com.albayrak.utils.exceptions.UnreleasedException;
 import com.albayrak.utils.http.ServiceUtils;
@@ -17,10 +18,11 @@ public class RecommendationRESTController implements RecommendationServiceAPI {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecommendationRESTController.class);
 
-    private final ServiceUtils serviceUtils;
+    private final RecommendationService recommendationService;
 
-    public RecommendationRESTController(ServiceUtils serviceUtils) {
-        this.serviceUtils = serviceUtils;
+    public RecommendationRESTController(RecommendationService recommendationService){
+        this.recommendationService = recommendationService;
+
     }
 
 
@@ -28,18 +30,30 @@ public class RecommendationRESTController implements RecommendationServiceAPI {
     public List<Recommendation> getRecommendations(int animeId) {
 
         if(animeId < 1) throw new InvalidInputException("Invalid animeId: " + animeId);
-        if(animeId == 113) {
-            LOG.debug("No recommendations found for animeId: {}", + animeId);
-            return new ArrayList<>();
-        }
         if(animeId == 501) throw new UnreleasedException("Unreleased animeId: " + animeId);
-        List<Recommendation> listRecommendations = new ArrayList<>();
-        listRecommendations.add(new Recommendation(animeId, 1, "Author 1", 1, "Content 1", serviceUtils.getServiceAddress()));
-        listRecommendations.add(new Recommendation(animeId, 2, "Author 2", 2, "Content 2", serviceUtils.getServiceAddress()));
-        listRecommendations.add(new Recommendation(animeId, 3, "Author 3", 3, "Content 3", serviceUtils.getServiceAddress()));
 
-        LOG.debug("/recommendations found response size: {}", listRecommendations.size());
+
+        List<Recommendation> listRecommendations = recommendationService.getAnimeById(animeId);
+
+        LOG.debug("/getRecommendations found response size: {}", listRecommendations.size());
 
         return listRecommendations;
     }
+    @Override
+    public Recommendation createRecommendation(Recommendation model) {
+        Recommendation recommendation = recommendationService.createRecommendation(model);
+
+        LOG.debug("REST Controller createRecommendation: created an entity: {} / {}",recommendation.getAnimeId(),recommendation.getRecommendationId());
+
+        return recommendation;
+    }
+
+    @Override
+    public void deleteRecommendations(int animeId) {
+
+        LOG.debug("REST Controller deleteRecommendation: trying to delete recommendations for the anime with animeId: {}", animeId);
+        recommendationService.deleteRecommendations(animeId);
+
+    }
 }
+

@@ -2,10 +2,10 @@ package com.albayrak.api.composite.anime;
 
 public class ServiceAddress {
 
-    private final String compositeAddress;
-    private final String animeAddress;
-    private final String reviewAddress;
-    private final String recommendationAddress;
+    private String compositeAddress;
+    private String animeAddress;
+    private String reviewAddress;
+    private String recommendationAddress;
 
     public ServiceAddress(String compositeAddress, String animeAddress, String reviewAddress, String recommendationAddress) {
         this.compositeAddress = compositeAddress;
@@ -19,6 +19,22 @@ public class ServiceAddress {
         this.animeAddress = null;
         this.reviewAddress = null;
         this.recommendationAddress = null;
+    }
+
+    public void setCompositeAddress(String compositeAddress) {
+        this.compositeAddress = compositeAddress;
+    }
+
+    public void setAnimeAddress(String animeAddress) {
+        this.animeAddress = animeAddress;
+    }
+
+    public void setReviewAddress(String reviewAddress) {
+        this.reviewAddress = reviewAddress;
+    }
+
+    public void setRecommendationAddress(String recommendationAddress) {
+        this.recommendationAddress = recommendationAddress;
     }
 
     public String getCompositeAddress() {

@@ -1,13 +1,13 @@
 package com.albayrak.microservices.core.animerecommendation.datalayer;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-public interface RecommendationRepository extends CrudRepository<RecommendationEntity, String> {
 
+public interface RecommendationRepository extends CrudRepository<RecommendationEntity, Integer> {
 
+    @Transactional(readOnly = true)
     List<RecommendationEntity> findByAnimeId(int animeId);
 
 }

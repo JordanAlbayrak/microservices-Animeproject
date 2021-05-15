@@ -1,5 +1,6 @@
 package com.albayrak.microservices.composite.anime;
 
+import com.albayrak.api.composite.anime.AnimeAggregate;
 import com.albayrak.api.core.anime.Anime;
 import com.albayrak.api.core.recommendation.Recommendation;
 import com.albayrak.api.core.review.Review;
@@ -23,6 +24,7 @@ import java.util.Collections;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
+import static reactor.core.publisher.Mono.just;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
@@ -126,6 +128,26 @@ class AnimeCompositeServiceApplicationTests {
 				.expectBody()
 				.jsonPath("$.path").isEqualTo("/anime-composite/" + ANIME_ID_NO_CONTENT)
 				.jsonPath("$.message").isEqualTo("UNRELEASED CONTENT: " + ANIME_ID_NO_CONTENT);
+	}
+	public void createCompositeAnimeNoRecommendationsNoReviews() {
+
+		AnimeAggregate compositeAnime = new AnimeAggregate(1, "title", "author", null, null, null);
+
+		client.post()
+				.uri("/anime-composite")
+				.body(just(compositeAnime), AnimeAggregate.class)
+				.exchange()
+				.expectStatus().isOk();
+	}
+	@Test
+	public void deleteCompositeAnimeNoRecommendationsNoReviews() {
+
+//		AnimeAggregate compositeAnime = new AnimeAggregate(1, "name", 1, null, null, null);
+//
+//		client.delete()
+//				.uri("/anime-composite")
+//				.exchange()
+//				.expectStatus().isOk();
 	}
 
 	@Test

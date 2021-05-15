@@ -54,17 +54,24 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
         this.restTemplate = restTemplate;
         this.mapper = mapper;
 
-        animeServiceUrl = "http://" + animeServiceHost + ":" + animeServicePort + "/anime/";
-        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?animeId=";
-        reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?animeId=";
+        //animeServiceUrl = "http://" + animeServiceHost + ":" + animeServicePort + "/anime/";
+        animeServiceUrl = "http://" + animeServiceHost + ":" + animeServicePort + "/anime";
+
+
+        //recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?animeId=";
+        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation";
+
+        //reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?animeId=";
+        reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review";
+
 
 
     }
 
     @Override
-    public Anime getAnime(int animeId) {
+    public Anime getAnime(int animeId) { //sends GET request to anime service
         try{
-            String url = animeServiceUrl + animeId;
+            String url = animeServiceUrl + "/" + animeId;
             LOG.debug("Will call getAnime API on URL: {}", url);
 
             Anime anime = restTemplate.getForObject(url, Anime.class);
@@ -88,6 +95,36 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
         }
     }
 
+    @Override
+    public Anime createAnime(Anime model) { //send POST request for
+
+
+        try{
+            //need /anime
+            String url = animeServiceUrl;
+            return restTemplate.postForObject(url, model, Anime.class);
+        }
+        catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    @Override
+    public void deleteAnime(int animeId) {
+
+        try{
+            //need /anime/animeId
+            String url = animeServiceUrl + "/" +  animeId;
+            LOG.debug("Will call the deleteAnime API on URL: {}", url);
+
+            restTemplate.delete(url);
+
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+
+    }
+
     private String getErrorMessage(HttpClientErrorException ex) {
 
         try{
@@ -100,9 +137,11 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
     }
 
     @Override
-    public List<Recommendation> getRecommendations(int animeId) {
+    public List<Recommendation> getRecommendations(int animeId) { // sends GET by AnimeId request to recommendation service
         try{
-            String url = recommendationServiceUrl + animeId;
+            //need  /recommendations?animeId=animeId
+
+            String url = recommendationServiceUrl + "?animeId=" + animeId;
 
             LOG.debug("Will call getRecommendations API on URL: {}", url);
             List<Recommendation> recommendations = restTemplate.exchange(
@@ -120,10 +159,46 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
     }
 
     @Override
-    public List<Review> getReviews(int animeId) {
+    public Recommendation createRecommendation(Recommendation model) {
 
         try{
-            String url = reviewServiceUrl + animeId;
+            //need  /recommendation
+            String url = recommendationServiceUrl;
+            LOG.debug("Will post a new recommendation to URL: {}", url);
+
+            Recommendation recommendation = restTemplate.postForObject(url, model, Recommendation.class);
+            LOG.debug("Created a recommendation for animeId: {}, recommendaitonId: {}", recommendation.getAnimeId(), recommendation.getRecommendationId());
+
+            return recommendation;
+
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+
+    }
+
+    @Override
+    public void deleteRecommendations(int animeId) { //send DELETE by animeId request to recommendation service
+
+        try{
+            //need /recommendation?animeId=animeId;
+            String url = recommendationServiceUrl + "?animeId=" + animeId;
+            LOG.debug("Will call deleteRecommendations API on URL: {}", url);
+
+            restTemplate.delete(url);
+
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+
+    }
+
+    @Override
+    public List<Review> getReviews(int animeId) {// sends GET by AnimeId request to review service
+
+        try{
+            //need /review?animeId=animeId
+            String url = reviewServiceUrl + "?animeId=" + animeId;
 
 
             LOG.debug("Will call getReview API on URL: {}", url);
@@ -140,4 +215,56 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
             LOG.warn("Got an exception while requesting reviews, will return zero reviews: {}", ex.getMessage());
             return new ArrayList<>();
         }
-    }}
+    }
+
+    @Override
+    public Review createReview(Review model) {
+
+        try{
+            //need /review
+
+            String url = reviewServiceUrl;
+            LOG.debug("Will post a new review to URL: {}", url);
+
+            Review review = restTemplate.postForObject(url, model, Review.class);
+            LOG.debug("Created a review for animeId: {}, reviewId {}", review.getAnimeId(), review.getReviewId());
+
+            return review;
+
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+
+    }
+
+    @Override
+    public void deleteReviews(int animeId) {
+
+        try{
+            //need /review?animeId=animeId
+
+            String url = reviewServiceUrl + "?animeId=" + animeId;
+            LOG.debug("Will send delete request to API on url: {}", url);
+
+            restTemplate.delete(url);
+
+        }catch(HttpClientErrorException ex){
+            throw handleHttpClientException(ex);
+        }
+
+
+    }
+
+    private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
+        switch (ex.getStatusCode()) {
+            case NOT_FOUND:
+                return new NotFoundException(getErrorMessage(ex));
+            case UNPROCESSABLE_ENTITY :
+                return new InvalidInputException(getErrorMessage(ex));
+            default:
+                LOG.warn("Got a unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
+                LOG.warn("Error body: {}", ex.getResponseBodyAsString());
+                return ex;
+        }
+    }
+}

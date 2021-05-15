@@ -3,12 +3,12 @@ package com.albayrak.api.composite.anime;
 import java.util.List;
 
 public class AnimeAggregate {
-    private final int animeId;
-    private final String title;
-    private final String author;
-    private final List<RecommendationSummary> recommendations;
-    private final List<ReviewSummary> reviews;
-    private final ServiceAddress serviceAddress;
+    private int animeId;
+    private String title;
+    private String author;
+    private List<RecommendationSummary> recommendations;
+    private List<ReviewSummary> reviews;
+    private ServiceAddress serviceAddress;
 
     public AnimeAggregate(int animeId, String title, String author, List<RecommendationSummary> recommendations, List<ReviewSummary> reviews, ServiceAddress serviceAddress) {
         this.animeId = animeId;
@@ -25,6 +25,30 @@ public class AnimeAggregate {
         this.recommendations = null;
         this.reviews = null;
         this.serviceAddress = null;
+    }
+
+    public void setAnimeId(int animeId) {
+        this.animeId = animeId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setRecommendations(List<RecommendationSummary> recommendations) {
+        this.recommendations = recommendations;
+    }
+
+    public void setReviews(List<ReviewSummary> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void setServiceAddress(ServiceAddress serviceAddress) {
+        this.serviceAddress = serviceAddress;
     }
 
     public int getAnimeId() {

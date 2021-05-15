@@ -1,5 +1,9 @@
 package com.albayrak.microservices.core.anime;
 
+import com.albayrak.api.core.anime.Anime;
+import com.albayrak.microservices.core.anime.datalayer.AnimeEntity;
+import com.albayrak.microservices.core.anime.datalayer.AnimeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static reactor.core.publisher.Mono.just;
+
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = {"spring.data.mongodb.port: 0"})
 @ExtendWith(SpringExtension.class)
 @AutoConfigureWebTestClient
 class AnimeServiceApplicationTests {
@@ -22,8 +31,23 @@ class AnimeServiceApplicationTests {
 	@Autowired
 	private WebTestClient client;
 
+	@Autowired
+	private AnimeRepository repository; //added persistence
+
+	@BeforeEach
+	public void setupDb(){ //added persistence
+		repository.deleteAll();
+	}
+
 	@Test
 	public void getAnimeById(){
+
+		AnimeEntity entity = new AnimeEntity(ANIME_ID_OKAY, "Title-"+ANIME_ID_OKAY, "Author-"+ANIME_ID_OKAY);
+		repository.save(entity);
+
+		//make sure it's in the repo
+		assertTrue(repository.findByAnimeId(ANIME_ID_OKAY).isPresent());
+		
 
 		client.get()
 				.uri("/anime/" + ANIME_ID_OKAY)
@@ -73,6 +97,47 @@ class AnimeServiceApplicationTests {
 				.jsonPath("$.path").isEqualTo("/anime/" + ANIME_ID_NO_CONTENT)
 				.jsonPath("$.message").isEqualTo("Unreleased animeId: " + ANIME_ID_NO_CONTENT);
 	}
+
+	@Test
+	public void createAnime(){
+		//create a anime model
+		Anime model = new Anime(ANIME_ID_OKAY, "title-"+ANIME_ID_OKAY, "author","SA");
+
+		//sent the post request
+		client.post()
+				.uri("/anime/")
+				.body(just(model), Anime.class)
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectHeader().contentType(MediaType.APPLICATION_JSON)
+				.expectBody()
+				.jsonPath("$.animeId").isEqualTo(ANIME_ID_OKAY);
+
+		assertTrue(repository.findByAnimeId(ANIME_ID_OKAY).isPresent());
+	}
+
+	@Test
+	public void deleteAnime(){
+		AnimeEntity entity = new AnimeEntity(ANIME_ID_OKAY, "title-"+ANIME_ID_OKAY, "author" );
+		repository.save(entity);
+
+		//make sure it's in the repo
+		assertTrue(repository.findByAnimeId(ANIME_ID_OKAY).isPresent());
+
+		client.delete()
+				.uri("/anime/"+ANIME_ID_OKAY)
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody();
+
+		assertFalse(repository.findByAnimeId(ANIME_ID_OKAY).isPresent());
+
+	}
+	
 	@Test
 	void contextLoads() {
 	}

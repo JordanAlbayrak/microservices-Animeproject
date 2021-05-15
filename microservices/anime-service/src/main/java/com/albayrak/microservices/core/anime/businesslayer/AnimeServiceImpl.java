@@ -31,7 +31,7 @@ public class AnimeServiceImpl implements AnimeService{
     @Override
     public Anime getAnimeById(int animeId) {
         AnimeEntity entity = repository.findByAnimeId(animeId)
-                .orElseThrow(() -> new NotFoundException("No product found for productId: " + animeId));
+                .orElseThrow(() -> new NotFoundException("No anime found for animeId: " + animeId));
 
         Anime response = mapper.entityToModel(entity);
         response.setServiceAddress(serviceUtils.getServiceAddress());
@@ -57,7 +57,7 @@ public class AnimeServiceImpl implements AnimeService{
     @Override
     public void deleteAnime(int animeId) {
 
-        LOG.debug("deleteProduct: entity delete for animeId: {}", animeId);
+        LOG.debug("deleteAnime: entity delete for animeId: {}", animeId);
         repository.findByAnimeId(animeId).ifPresent(e -> repository.delete(e));
 
     }
