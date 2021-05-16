@@ -1,13 +1,6 @@
 package com.albayrak.microservices.core.animerecommendation.datalayer;
 
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "recommendations", indexes = { @Index(name = "recommendations_unique_idx", unique = true, columnList = "animeId,recommendationId") })
@@ -25,7 +18,6 @@ public class RecommendationEntity {
 
 
     private int recommendationId;
-
     private String author;
     private int rating;
     private String content;

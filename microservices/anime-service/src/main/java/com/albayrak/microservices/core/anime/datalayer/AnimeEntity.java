@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="anime")
+@Document(collection="animes")
 public class AnimeEntity {
 
     @Id
@@ -24,7 +24,7 @@ public class AnimeEntity {
     }
 
     public AnimeEntity(int animeId, String title, String author) {
-        this.animeId = getAnimeId();
+        this.animeId = animeId;
         this.title = title;
         this.author = author;
     }

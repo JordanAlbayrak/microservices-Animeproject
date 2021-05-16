@@ -45,11 +45,11 @@ public class AnimeCompositeIntegration implements AnimeServiceAPI, Recommendatio
             @Value("${app.anime-service.host}") String animeServiceHost,
             @Value("${app.anime-service.port}") String animeServicePort,
 
-            @Value("${app.recommendation-service.host}") String recommendationServiceHost,
-            @Value("${app.recommendation-service.port}") String recommendationServicePort,
+            @Value("${app.anime-recommendation-service.host}") String recommendationServiceHost,
+            @Value("${app.anime-recommendation-service.port}") String recommendationServicePort,
 
-            @Value("${app.review-service.host}") String reviewServiceHost,
-            @Value("${app.review-service.port}") String reviewServicePort
+            @Value("${app.anime-review-service.host}") String reviewServiceHost,
+            @Value("${app.anime-review-service.port}") String reviewServicePort
     ) {
         this.restTemplate = restTemplate;
         this.mapper = mapper;

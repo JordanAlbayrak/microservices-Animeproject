@@ -32,12 +32,13 @@ public class AnimeRESTController implements AnimeServiceAPI {
         LOG.debug("/anime MS return the found anime for animeId: " + animeId);
 
         if(animeId < 1) throw new InvalidInputException("Invalid animeId: " + animeId);
+        if(animeId == 500) throw new UnreleasedException("Unreleased animeId: " + animeId);
 
         //if (animeId == 13) throw new NotFoundException("No anime found for animeId: " + animeId);
 
         Anime anime = animeService.getAnimeById(animeId);
 
-        //return new Anime(animeId, "name-" + animeId, 123, serviceUtils.getServiceAddress());
+        //return new Anime(animeId, "title-" + animeId, 123, serviceUtils.getServiceAddress());
         return  anime;
     }
     @Override

@@ -14,7 +14,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   review:
     build: microservices/anime-review-service

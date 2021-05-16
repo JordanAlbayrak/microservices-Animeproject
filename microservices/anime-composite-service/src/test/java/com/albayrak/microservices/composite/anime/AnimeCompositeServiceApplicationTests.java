@@ -47,14 +47,14 @@ class AnimeCompositeServiceApplicationTests {
 	void setup(){
 
 		when(compositeIntegration.getAnime(ANIME_ID_OKAY))
-				.thenReturn(new Anime(ANIME_ID_OKAY, "name 1", "author 1", "mock address"));
+				.thenReturn(new Anime(ANIME_ID_OKAY, "title 1", "author 1", "mock address"));
 
 		//BDD equivalent
 		given(compositeIntegration.getAnime(ANIME_ID_OKAY))
-				.willReturn(new Anime(ANIME_ID_OKAY, "name 1", "author 1", "mock address"));
+				.willReturn(new Anime(ANIME_ID_OKAY, "title 1", "author 1", "mock address"));
 
 		when(compositeIntegration.getRecommendations(ANIME_ID_OKAY))
-				.thenReturn(Collections.singletonList(new Recommendation(ANIME_ID_OKAY, 1, "author 1", 1, "conent 1", "mock address")));
+				.thenReturn(Collections.singletonList(new Recommendation(ANIME_ID_OKAY, 1, "author 1", 1, "content 1", "mock address")));
 
 		when(compositeIntegration.getReviews(ANIME_ID_OKAY))
 				.thenReturn(Collections.singletonList(new Review(ANIME_ID_OKAY, 1, "author 1", "subject 1", "content 1", "mock address" )));

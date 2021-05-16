@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
-@ComponentScan("com.albayrak")
 @SpringBootApplication
+@ComponentScan("com.albayrak")
 public class AnimeCompositeServiceApplication {
 
 	@Bean

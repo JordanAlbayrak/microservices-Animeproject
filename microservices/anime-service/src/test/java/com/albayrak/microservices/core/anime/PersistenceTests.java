@@ -29,7 +29,7 @@ public class PersistenceTests {
     public void setupDb() {
         repository.deleteAll();
 
-        AnimeEntity entity = new AnimeEntity(number+ 1, "ti", "au");
+        AnimeEntity entity = new AnimeEntity(1, "a", "au");
         savedEntity = repository.save(entity);
 
         //expected, actual
@@ -42,7 +42,7 @@ public class PersistenceTests {
     @Test
     public void createAnimeEntity() {
 
-        AnimeEntity newEntity = new AnimeEntity(number+2, "t", "b");
+        AnimeEntity newEntity = new AnimeEntity(2, "b", "b");
         repository.save(newEntity);
 
         AnimeEntity foundEntity = repository.findById(newEntity.getId()).get();
